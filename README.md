@@ -12,6 +12,5 @@ my @google_domains = (
     'google.es',
     'google.co.in',
     'google.com.sg',
-
-);<br/><br/>
+    );<br/><br/>
 Tambahkan lebih banyak domain jika diperlukan
