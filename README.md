@@ -14,5 +14,4 @@ my @google_domains = (
     'google.com.sg',
 
 );
-
-# Tambahkan lebih banyak domain jika diperlukan
+Tambahkan lebih banyak domain jika diperlukan
