@@ -1,5 +1,5 @@
 # mass-google-dorking
-Tool perl untuk dorking menggunakan semua list domain google
+Tool perl untuk dorking menggunakan semua list domain google<br/><br/>
 my @google_domains = (
     'google.com',
     'google.co.uk',
@@ -13,5 +13,5 @@ my @google_domains = (
     'google.co.in',
     'google.com.sg',
 
-);
+);<br/><br/>
 Tambahkan lebih banyak domain jika diperlukan
