@@ -1,5 +1,3 @@
-Skrip ini adalah alat keren yang dibikin pakai Perl untuk ngubek-ngubek Google dan ambil domain dari hasil pencarian. Skrip ini punya banyak fitur asik yang bikin pencarian jadi lebih gampang dan efisien. 
-
 ### Fitur Utama
 
 - **Mode Pencarian Fleksibel**: 
