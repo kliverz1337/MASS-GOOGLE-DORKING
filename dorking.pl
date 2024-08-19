@@ -2,20 +2,21 @@
 use strict;
 use warnings;
 use LWP::UserAgent;
+use HTTP::Response;
 use HTML::TreeBuilder;
 use URI;
 use Term::ANSIColor;
 use utf8;
 
-# Daftar domain Google yang paling banyak digunakan
+# Daftar domain Google yang paling banyak digunakan beserta deskripsinya
 my @google_domains = (
-    'google.com',     # Global
-    'google.co.id',   # Indonesia
-    'google.co.uk',   # United Kingdom
-    'google.ca',      # Canada
-    'google.de',      # Germany
-    'google.co.jp',   # Japan
-    'google.com.au',  # Australia
+    { domain => 'google.com',     description => 'Global' },
+    { domain => 'google.co.id',   description => 'Indonesia' },
+    { domain => 'google.co.uk',   description => 'United Kingdom' },
+    { domain => 'google.ca',      description => 'Canada' },
+    { domain => 'google.de',      description => 'Germany' },
+    { domain => 'google.co.jp',   description => 'Japan' },
+    { domain => 'google.com.au',  description => 'Australia' },
 );
 
 # Banner pada saat script di jalankan
@@ -26,6 +27,29 @@ sub banner {
     print colored("################################################################", 'white on_red'), "\n\n";
 }
 banner();
+
+# Inisialisasi user agent
+my $ua = LWP::UserAgent->new(timeout => 10, env_proxy => 1);
+$ua->default_header('User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3');
+
+# Cek apakah IP diblokir
+sub check_ip_blocked {
+    my $test_url = 'https://www.google.com/';
+    my $response = $ua->get($test_url);
+    
+    if ($response->is_success) {
+        return 0;  # IP tidak diblokir
+    } elsif ($response->code == 403 || $response->code == 429) {
+        print color('bold red'), "IP Anda diblokir oleh Google. Silakan coba lagi nanti.\n", color('reset');
+        exit;  # Keluar dari skrip jika IP diblokir
+    } else {
+        print color('bold red'), "Gagal melakukan pengecekan IP: ", $response->status_line, "\n", color('reset');
+        exit;  # Keluar dari skrip jika ada masalah dengan pengecekan
+    }
+}
+
+# Cek IP sebelum lanjut
+check_ip_blocked();
 
 # Fungsi untuk mendapatkan input query secara interaktif
 print color('bold green'), "Masukkan kata kunci pencarian Google: ", color('reset');
@@ -42,10 +66,6 @@ my $mode = <STDIN>;
 chomp($mode);
 die color('bold red') . "Pilihan tidak valid!\n" . color('reset') unless $mode eq '1' || $mode eq '2';
 
-# Inisialisasi user agent
-my $ua = LWP::UserAgent->new(timeout => 10, env_proxy => 1);
-$ua->default_header('User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3');
-
 # File untuk menyimpan hasil pencarian
 open(my $fh, '>', 'hasil_pencarian.txt') or die color('bold red') . "Tidak bisa membuka file: $!\n" . color('reset');
 
@@ -56,14 +76,17 @@ my %seen_domains;
 if ($mode eq '1') {
     print color('bold green'), "\nPilih domain Google:\n";
     for my $i (0 .. $#google_domains) {
-        print ($i + 1) . ". $google_domains[$i]\n";
+        my $index = $i + 1;
+        my $domain = $google_domains[$i]->{domain};
+        my $description = $google_domains[$i]->{description};
+        print "$index. $domain - $description\n";
     }
     print color('reset');
     print "Masukkan nomor domain (1-" . scalar(@google_domains) . "): ";
     my $domain_choice = <STDIN>;
     chomp($domain_choice);
     die color('bold red') . "Pilihan domain tidak valid!\n" . color('reset') unless $domain_choice >= 1 && $domain_choice <= scalar(@google_domains);
-    @google_domains = ($google_domains[$domain_choice - 1]);
+    @google_domains = ($google_domains[$domain_choice - 1]->{domain});
 }
 
 # Loop untuk setiap domain Google
