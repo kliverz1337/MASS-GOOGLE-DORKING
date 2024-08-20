@@ -8,6 +8,9 @@ use URI;
 use Term::ANSIColor;
 use utf8;
 
+# Variabel debug (aktifkan dengan mengubah ke 1)
+my $debug = 0;
+
 # Daftar domain Google yang paling banyak digunakan
 my @google_domains = (
     { domain => 'google.com',     description => 'Global' },
@@ -25,13 +28,22 @@ sub banner() {
     if ($^O =~ /MSWin32/) { system("cls"); } else { system("clear"); }
 
     print color('reset');
-    print "      ";
-    print colored ("################################################################",'white on_red'),"\n";
-    print "      ";
-    print colored ("##  THANKS TO : JATIMCOM, BLACKUNIX CREW, KILL -9 CREW, BKHT  ##",'white on_red'),"\n";
-    print "      ";
-    print colored ("################################################################",'white on_red'),"\n\n";
+    print colored ("################################################################",'white'),"\n";
+    print colored ("##               Google Dorking Tool by Kliverz               ##",'white'),"\n";
+    print colored ("##             Contact : kliverz1337(at)gmail.com             ##",'white'),"\n";	
+    print colored ("##  THANKS TO : JATIMCOM, BLACKUNIX CREW, KILL -9 CREW, BKHT  ##",'white'),"\n";
+    print colored ("################################################################",'white'),"\n\n";
     print color('reset');
+}
+
+sub item
+{
+    my $n = shift // '+';
+    return color('bold red')," ["
+    , color('bold green'),"$n"
+    , color('bold red'),"] "
+    , color("bold white")
+    ;
 }
 
 # Fungsi untuk mengecek apakah IP diblokir oleh Google
@@ -47,15 +59,18 @@ sub check_ip_block {
         my $content = $response->decoded_content;
 
         if ($content =~ /detected unusual traffic|captcha/i) {
+			print item();
             print color('bold red');
             print "WARNING: IP Anda mungkin diblokir oleh Google!\n";
             print color('reset');
         } else {
+			print item();
             print color('bold green');
-            print "IP Anda tidak diblokir oleh Google.\n";
+            print "IP Anda tidak diblokir oleh Google.\n\n";
             print color('reset');
         }
     } else {
+		print item();
         print color('bold yellow');
         print "Tidak dapat menghubungi Google untuk memeriksa status IP.\n";
         print color('reset');
@@ -68,7 +83,7 @@ check_ip_block();
 
 # Fungsi untuk mendapatkan input query secara interaktif
 print color('bold green');
-print "Masukkan kata kunci pencarian Google: ";
+print "Masukkan Google Dork: ";
 print color('reset');
 my $query = <STDIN>;
 chomp($query);  # Menghapus newline di akhir input
@@ -159,6 +174,13 @@ foreach my $google_domain (@google_domains) {
                     if ($href =~ m{^/url\?q=(http[^&]+)}) {
                         my $clean_url = $1;
 
+                        # Debug: Tampilkan URL yang ditemukan
+                        if ($debug) {
+                            print color('bold blue');
+                            print "Debug: URL ditemukan: $clean_url\n";
+                            print color('reset');
+                        }
+
                         # Ekstrak domain menggunakan URI
                         my $uri = URI->new($clean_url);
                         my $domain_only = $uri->host;
@@ -181,6 +203,13 @@ foreach my $google_domain (@google_domains) {
 
             # Bersihkan tree HTML
             $tree->delete;
+
+            # Debug: Tampilkan informasi halaman yang diproses
+            if ($debug) {
+                print color('bold blue');
+                print "Debug: Halaman diproses: $start\n";
+                print color('reset');
+            }
 
             # Beri jeda acak untuk menghindari blokir
             my $sleep_time = 20 + int(rand(41));  # Angka acak antara 20-60 detik
