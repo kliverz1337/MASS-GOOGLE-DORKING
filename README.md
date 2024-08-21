@@ -1,43 +1,80 @@
-### Fitur Utama
+```markdown
+# Google Dorking Tool
 
-- **Mode Pencarian Fleksibel**: 
-  - Lo bisa pilih mau nyari pakai satu domain Google aja atau semua domain yang tersedia. Jadi, bisa nyari yang lebih fokus atau lebih luas.
+Ini adalah alat sederhana yang ditulis dalam Perl untuk melakukan Google Dorking, yaitu teknik pencarian canggih di Google untuk menemukan informasi spesifik di web dengan menggunakan query pencarian yang terperinci.
 
-- **Library Mantap**:
-  - Skrip ini pake modul-modul Perl yang top kayak `LWP::UserAgent` buat request HTTP, `HTML::TreeBuilder` buat parsing HTML, dan `URI` buat ngurusin URL. Modul-modul ini bikin skrip jadi jago dalam ambil data dari web.
+## Fitur
 
-- **Warna-warni di Konsol**:
-  - Output di terminal bisa berwarna dengan `Term::ANSIColor`, jadi informasi yang muncul lebih gampang dibaca dan dibedain.
+- **Pengecekan Blokir IP**: Memeriksa apakah IP Anda diblokir oleh Google dengan melakukan request sederhana.
+- **Pencarian Google**: Melakukan pencarian berdasarkan query yang diberikan dan domain Google yang dipilih.
+- **Pemilihan Domain**: Memungkinkan pencarian di satu domain Google spesifik atau di semua domain Google yang umum digunakan.
+- **Output**: Menyimpan hasil pencarian ke dalam file `google_result.txt` dan menampilkan jumlah domain unik yang ditemukan.
+- **Debug Mode**: Terdapat mode debug yang dapat diaktifkan untuk menampilkan informasi tambahan selama proses.
 
-- **Kelola Hasil Pencarian**:
-  - Hasil pencarian disimpen di file (`hasil_pencarian.txt`) dan juga dicetak di konsol. Jadi lo bisa simpen dan cek hasil pencarian nanti.
+## Prerequisites
 
-- **Penanganan Error**:
-  - Kalo ada masalah waktu ambil halaman dari Google, skrip ini bakal kasih tau lewat pesan error, dan berhenti kalo ada masalah besar. Ini membantu lo buat tau kalo ada yang salah.
+Pastikan Anda memiliki Perl terinstal di sistem Anda. Anda juga perlu menginstal beberapa modul Perl yang diperlukan:
 
-- **Jeda Acak**:
-  - Skrip ini nambahin jeda acak antara permintaan buat ngindarin pemblokiran dari Google. Jadi, enggak bakal bikin Google curiga.
+- `LWP::UserAgent`
+- `HTML::TreeBuilder`
+- `URI`
+- `Term::ANSIColor`
 
-- **Validasi Input Pengguna**:
-  - Skrip ini ngecek input pengguna supaya pilihan mode dan domain yang dimasukin bener. Kalo salah, bakal ada pesan error yang jelas.
+Jika modul-modul ini belum terinstal, Anda dapat menginstalnya menggunakan `cpan` atau `cpanm`:
 
-- **Kode Bersih**:
-  - Kode di skrip ini rapi dengan fungsi-fungsi yang terpisah untuk berbagai tugas, bikin gampang dibaca dan dipelihara.
+```bash
+cpan LWP::UserAgent HTML::TreeBuilder URI Term::ANSIColor
+```
 
-- **Dukung Banyak OS**:
-  - Skrip ini ngecek sistem operasi yang dipake dan bersihin layar sesuai dengan OS-nya (Windows atau Unix-like).
+## Cara Menggunakan
 
-- **Hapus Duplikasi**:
-  - Dengan pake hash (`%seen_domains`), skrip ini pastiin cuma domain yang unik yang disimpen dan ditampilkan, jadi enggak ada duplikasi.
+1. **Jalankan Script**:
+   Jalankan script Perl ini dari terminal atau command line.
 
-### Cara Pakai
+   ```bash
+   perl dorking.pl
+   ```
 
-1. **Jalanin Skrip**: Eksekusi skrip Perl di terminal.
-2. **Masukin Kata Kunci**: Ketik kata kunci yang mau dicari di Google.
-3. **Pilih Mode Pencarian**: Pilih antara satu domain Google atau semua domain.
-4. **Tunggu Hasil**: Skrip bakal nyari, ambil domain, dan simpen hasilnya ke file `hasil_pencarian.txt`.
+2. **Masukkan Query Google Dork**:
+   Ketika diminta, masukkan query Google Dork yang ingin Anda gunakan untuk pencarian.
 
-### Persyaratan
+3. **Pilih Mode Pencarian**:
+   - Pilih `1` untuk menggunakan satu domain Google.
+   - Pilih `2` untuk menggunakan semua domain Google yang umum.
 
-- Perl 5.x
-- Modul Perl: `LWP::UserAgent`, `HTML::TreeBuilder`, `URI`, `Term::ANSIColor`
+4. **Pilih Domain (jika mode 1)**:
+   Jika memilih mode 1, Anda akan diminta untuk memilih domain Google dari daftar yang disediakan.
+
+5. **Tunggu Proses**:
+   Script akan melakukan pencarian dan menyimpan hasilnya ke dalam file `google_result.txt`. Juga akan menampilkan domain-domain unik yang ditemukan di konsol.
+
+6. **Cek Hasil**:
+   Setelah proses selesai, Anda dapat memeriksa file `google_result.txt` untuk melihat hasil pencarian.
+
+## Contoh Penggunaan
+
+```bash
+perl dorking.pl
+```
+
+- Masukkan query seperti `site:example.com "confidential"`.
+- Pilih mode pencarian dan domain sesuai kebutuhan.
+- Tunggu hingga proses selesai dan cek file `google_result.txt` untuk hasil pencarian.
+
+## Peringatan
+
+- Gunakan alat ini dengan bijak dan sesuai dengan kebijakan serta peraturan Google.
+- Jangan gunakan alat ini untuk melakukan scraping berlebihan atau merusak layanan Google.
+
+## Kontak
+
+Jika Anda memiliki pertanyaan atau masalah, Anda dapat menghubungi saya di [kliverz1337(at)gmail.com](mailto:kliverz1337@gmail.com).
+
+## Terima Kasih
+
+Terima kasih kepada JATIMCOM, BLACKUNIX CREW, KILL -9 CREW, dan BKHT untuk dukungan dan kontribusinya.
+
+---
+
+**Catatan**: Script ini hanya untuk tujuan pendidikan dan penelitian. Pastikan untuk mematuhi kebijakan penggunaan dan hukum yang berlaku saat menggunakan alat ini.
+```
