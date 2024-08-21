@@ -59,18 +59,18 @@ sub check_ip_block {
         my $content = $response->decoded_content;
 
         if ($content =~ /detected unusual traffic|captcha/i) {
-			print item();
+            print item();
             print color('bold red');
             print "WARNING: IP Anda mungkin diblokir oleh Google!\n";
             print color('reset');
         } else {
-			print item();
+            print item();
             print color('bold green');
             print "IP Anda tidak diblokir oleh Google.\n\n";
             print color('reset');
         }
     } else {
-		print item();
+        print item();
         print color('bold yellow');
         print "Tidak dapat menghubungi Google untuk memeriksa status IP.\n";
         print color('reset');
@@ -117,7 +117,7 @@ $ua->timeout(10);
 $ua->env_proxy;
 
 # File untuk menyimpan hasil pencarian
-open(my $fh, '>', 'hasil_pencarian.txt') or die color('bold red') . "Tidak bisa membuka file: $!\n" . color('reset');
+open(my $fh, '>', 'google_result.txt') or die color('bold red') . "Tidak bisa membuka file: $!\n" . color('reset');
 
 # Variabel untuk menyimpan jumlah domain dan hash untuk memeriksa duplikasi
 my $total_domains = 0;
@@ -230,5 +230,5 @@ close($fh);
 
 print color('bold green');
 print "\nTotal domain yang ditemukan (tanpa duplikat): $total_domains\n";
-print "Hasil pencarian disimpan ke 'hasil_pencarian.txt'\n";
+print "Hasil pencarian disimpan ke 'google_result.txt'\n";
 print color('reset');
