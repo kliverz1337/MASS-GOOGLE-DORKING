@@ -1,17 +1,17 @@
 #!/usr/bin/perl
+use if $^O eq "MSWin32", Win32::Console::ANSI;
 use strict;
 use warnings;
 use LWP::UserAgent;
-use HTTP::Response;
 use HTML::TreeBuilder;
 use URI;
 use Term::ANSIColor;
 use utf8;
 
-# Aktifkan mode debug (1 untuk aktif, 0 untuk nonaktif)
-my $debug_mode = 1;
+# Variabel debug (aktifkan dengan mengubah ke 1)
+my $debug = 1;
 
-# Daftar domain Google yang paling banyak digunakan beserta deskripsinya
+# Daftar domain Google yang paling banyak digunakan
 my @google_domains = (
     { domain => 'google.com',     description => 'Global' },
     { domain => 'google.co.id',   description => 'Indonesia' },
@@ -22,76 +22,109 @@ my @google_domains = (
     { domain => 'google.com.au',  description => 'Australia' },
 );
 
-# Fungsi untuk log debug
-sub debug_log {
-    my ($message) = @_;
-    if ($debug_mode) {
-        print color('bold magenta'), "[DEBUG] $message\n", color('reset');
-    }
-}
-
-# Banner pada saat script dijalankan
+# Fungsi untuk menampilkan banner
 sub banner {
-    system($^O eq 'MSWin32' ? 'cls' : 'clear');
-    print color('reset'), colored("################################################################", 'white on_red'), "\n";
-    print colored("##  THANKS TO : JATIMCOM, BLACKUNIX CREW, KILL -9 CREW, BKHT  ##", 'white on_red'), "\n";
-    print colored("################################################################", 'white on_red'), "\n\n";
+    system("title Google Dorking by kliverz") if $^O eq "MSWin32";
+    system($^O eq "MSWin32" ? "cls" : "clear");
+
+    print color('reset');
+    print colored("################################################################", 'white'), "\n";
+    print colored("##               Google Dorking Tool by Kliverz               ##", 'white'), "\n";
+    print colored("##             Contact : kliverz1337(at)gmail.com             ##", 'white'), "\n";
+    print colored("##  THANKS TO : JATIMCOM, BLACKUNIX CREW, KILL -9 CREW, BKHT  ##", 'white'), "\n";
+    print colored("################################################################", 'white'), "\n\n";
+    print color('reset');
 }
-banner();
 
-# Inisialisasi user agent
-my $ua = LWP::UserAgent->new(timeout => 10, env_proxy => 1);
-$ua->default_header('User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3');
-debug_log("User agent initialized with default headers.");
+sub item {
+    my $n = shift // '+';
+    return color('bold red'), " ["
+    , color('bold green'), "$n"
+    , color('bold red'), "] "
+    , color("bold white")
+    ;
+}
 
-# Cek apakah IP diblokir
-sub check_ip_blocked {
-    my $test_url = 'https://www.google.com/';
-    my $response = $ua->get($test_url);
-    
+# Fungsi untuk mengecek apakah IP diblokir oleh Google
+sub check_ip_block {
+    my $ua = LWP::UserAgent->new;
+    $ua->timeout(10);
+    $ua->env_proxy;
+
+    my $url = "https://www.google.com";
+    print color('bold blue') if $debug;
+    print "Debug: Checking IP block status by accessing $url\n" if $debug;
+    my $response = $ua->get($url);
+
     if ($response->is_success) {
-        debug_log("IP check passed, Google is accessible.");
-        return 0;  # IP tidak diblokir
-    } elsif ($response->code == 403 || $response->code == 429) {
-        print color('bold red'), "IP Anda diblokir oleh Google. Silakan coba lagi nanti.\n", color('reset');
-        debug_log("IP blocked by Google. Response code: " . $response->code);
-        exit;  # Keluar dari skrip jika IP diblokir
+        my $content = $response->decoded_content;
+
+        if ($content =~ /detected unusual traffic|captcha/i) {
+            print item();
+            print color('bold red');
+            print "WARNING: IP Anda mungkin diblokir oleh Google!\n";
+            print color('reset');
+        } else {
+            print item();
+            print color('bold green');
+            print "IP Anda tidak diblokir oleh Google.\n\n";
+            print color('reset');
+        }
     } else {
-        print color('bold red'), "Gagal melakukan pengecekan IP: ", $response->status_line, "\n", color('reset');
-        debug_log("IP check failed. Status line: " . $response->status_line);
-        exit;  # Keluar dari skrip jika ada masalah dengan pengecekan
+        print item();
+        print color('bold yellow');
+        print "Tidak dapat menghubungi Google untuk memeriksa status IP.\n";
+        print color('reset');
     }
 }
 
-# Cek IP sebelum lanjut
-check_ip_blocked();
+# Tampilkan banner dan cek IP
+banner();
+check_ip_block();
 
 # Fungsi untuk mendapatkan input query secara interaktif
-print color('bold green'), "Masukkan kata kunci pencarian Google: ", color('reset');
+print color('bold green');
+print "Masukkan Google Dork: ";
+print color('reset');
 my $query = <STDIN>;
-chomp($query);
-die color('bold red') . "Query tidak boleh kosong!\n" . color('reset') unless $query;
-debug_log("User input query: $query");
+chomp($query);  # Menghapus newline di akhir input
 
+# Cek jika query kosong
+if (!$query) {
+    die color('bold red') . "Query tidak boleh kosong!\n" . color('reset');
+}
+
+# Ganti spasi dengan '+' untuk query URL Google
 $query =~ s/ /+/g;
-debug_log("Query formatted for URL: $query");
 
 # Pilih mode pencarian: satu domain atau semua
-print color('bold green'), "\nPilih mode pencarian:\n1. Gunakan satu domain Google\n2. Gunakan semua domain Google\n", color('reset');
+print color('bold green');
+print "\nPilih mode pencarian:\n";
+print "1. Gunakan satu domain Google\n";
+print "2. Gunakan semua domain Google\n";
+print color('reset');
 print "Masukkan pilihan (1 atau 2): ";
 my $mode = <STDIN>;
 chomp($mode);
-die color('bold red') . "Pilihan tidak valid!\n" . color('reset') unless $mode eq '1' || $mode eq '2';
-debug_log("Search mode selected: $mode");
+
+# Validasi input mode
+if ($mode ne '1' && $mode ne '2') {
+    die color('bold red') . "Pilihan tidak valid!\n" . color('reset');
+}
+
+# Inisialisasi user agent
+my $ua = LWP::UserAgent->new;
+$ua->timeout(10);
+$ua->env_proxy;
 
 # File untuk menyimpan hasil pencarian
-open(my $fh, '>', 'hasil_pencarian.txt') or die color('bold red') . "Tidak bisa membuka file: $!\n" . color('reset');
-debug_log("Output file 'hasil_pencarian.txt' opened for writing.");
+open(my $fh, '>', 'google_result.txt') or die color('bold red') . "Tidak bisa membuka file: $!\n" . color('reset');
 
 # Variabel untuk menyimpan jumlah domain dan hash untuk memeriksa duplikasi
 my $total_domains = 0;
 my %seen_domains;
 
+# Jika mode 1 (satu domain), minta pengguna memilih domain
 if ($mode eq '1') {
     print color('bold green'), "\nPilih domain Google:\n";
     for my $i (0 .. $#google_domains) {
@@ -104,56 +137,103 @@ if ($mode eq '1') {
     print "Masukkan nomor domain (1-" . scalar(@google_domains) . "): ";
     my $domain_choice = <STDIN>;
     chomp($domain_choice);
-    die color('bold red') . "Pilihan domain tidak valid!\n" . color('reset') unless $domain_choice >= 1 && $domain_choice <= scalar(@google_domains);
-    @google_domains = ($google_domains[$domain_choice - 1]->{domain});
-    debug_log("Domain selected: $google_domains[0]");
+
+    # Validasi input domain
+    if ($domain_choice < 1 || $domain_choice > scalar(@google_domains)) {
+        die color('bold red') . "Pilihan domain tidak valid!\n" . color('reset');
+    }
+
+    # Set domain yang dipilih
+    @google_domains = ($google_domains[$domain_choice - 1]);
 }
 
 # Loop untuk setiap domain Google
-foreach my $domain (@google_domains) {
-    print color('bold cyan'), "\nMencari di $domain...\n", color('reset');
-    debug_log("Starting search on $domain");
-    
+foreach my $google_domain (@google_domains) {
+    my $domain = $google_domain->{domain}; # Ambil domain dari hash
+    print color('bold cyan');
+    print "\nMencari di $domain...\n";
+    print color('reset');
+
+    # Iterasi untuk setiap halaman hasil pencarian (misal 10 halaman)
     for (my $start = 0; $start < 100; $start += 10) {
+        # URL Google Search dengan parameter pagination dan domain
         my $url = "https://www.$domain/search?q=$query&start=$start";
-        debug_log("Requesting URL: $url");
-        
+        print color('bold blue') if $debug;
+        print "Debug: Requesting URL: $url\n" if $debug;
+
+        # Membuat request
         my $response = $ua->get($url);
+
+        # Cek apakah request berhasil
         if ($response->is_success) {
-            debug_log("Request successful for URL: $url");
             my $content = $response->decoded_content;
+            print color('bold blue') if $debug;
+            print "Debug: Received content length: " . length($content) . "\n" if $debug;
+
+            # Parsing HTML
             my $tree = HTML::TreeBuilder->new_from_content($content);
-            
+
+            # Mencari semua tag <a> yang mengandung URL
             foreach my $a_tag ($tree->find_by_tag_name('a')) {
                 if (my $href = $a_tag->attr('href')) {
                     if ($href =~ m{^/url\?q=(http[^&]+)}) {
                         my $clean_url = $1;
+
+                        # Debug: Tampilkan URL yang ditemukan
+                        if ($debug) {
+                            print color('bold blue');
+                            print "Debug: URL ditemukan: $clean_url\n";
+                            print color('reset');
+                        }
+
+                        # Ekstrak domain menggunakan URI
                         my $uri = URI->new($clean_url);
                         my $domain_only = $uri->host;
-                        
-                        unless ($seen_domains{$domain_only}++) {
-                            print color('bold yellow'), "$domain_only\n", color('reset');
-                            print "$clean_url\n";
-                            print $fh "$domain_only\n$clean_url\n";
+
+                        # Cek apakah domain sudah pernah ditemukan
+                        unless (exists $seen_domains{$domain_only}) {
+                            # Tampilkan domain di konsol dengan warna kuning
+                            print color('bold yellow');
+                            print "$domain_only\n";
+                            print color('reset');
+
+                            # Simpan domain jika belum pernah ditemukan
+                            print $fh "$domain_only\n";
+                            $seen_domains{$domain_only} = 1;  # Tandai domain sebagai sudah ditemukan
                             $total_domains++;
-                            debug_log("New domain found: $domain_only");
                         }
                     }
                 }
             }
+
+            # Bersihkan tree HTML
             $tree->delete;
-            my $sleep_time = 20 + int(rand(41));
-            print color('bold blue'), "Menunggu selama $sleep_time detik sebelum mengambil halaman berikutnya...\n", color('reset');
-            debug_log("Sleeping for $sleep_time seconds.");
+
+            # Debug: Tampilkan informasi halaman yang diproses
+            if ($debug) {
+                print color('bold blue');
+                print "Debug: Halaman diproses: $start\n";
+                print color('reset');
+            }
+
+            # Beri jeda acak untuk menghindari blokir
+            my $sleep_time = 20 + int(rand(41));  # Angka acak antara 20-60 detik
+            print color('bold blue');
+            print "Menunggu selama $sleep_time detik sebelum mengambil halaman berikutnya...\n";
+            print color('reset');
             sleep($sleep_time);
         } else {
-            print color('bold red'), "Gagal mengambil halaman dari $domain: " . $response->status_line, color('reset');
-            debug_log("Request failed for $domain. Status line: " . $response->status_line);
-            last;
+            print color('bold red');
+            warn "Gagal mengambil halaman dari $domain: " . $response->status_line;
+            print color('reset');
+            last;  # Jika gagal mengambil halaman, keluar dari loop
         }
     }
 }
 
 close($fh);
-debug_log("Output file 'hasil_pencarian.txt' closed.");
-print color('bold green'), "\nTotal domain yang ditemukan (tanpa duplikat): $total_domains\n", "Hasil pencarian disimpan ke 'hasil_pencarian.txt'\n", color('reset');
+
+print color('bold green');
+print "\nTotal domain yang ditemukan (tanpa duplikat): $total_domains\n";
+print "Hasil pencarian disimpan ke 'google_result.txt'\n";
+print color('reset');
