@@ -77,4 +77,3 @@ Terima kasih kepada JATIMCOM, BLACKUNIX CREW, KILL -9 CREW, dan BKHT untuk dukun
 ---
 
 **Catatan**: Script ini hanya untuk tujuan pendidikan dan penelitian. Pastikan untuk mematuhi kebijakan penggunaan dan hukum yang berlaku saat menggunakan alat ini.
-```
