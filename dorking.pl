@@ -7,9 +7,20 @@ use HTML::TreeBuilder;
 use URI;
 use Term::ANSIColor;
 use utf8;
+use HTTP::Request::Common;
 
 # Variabel debug (aktifkan dengan mengubah ke 1)
 my $debug = 0;
+
+# Daftar User-Agent untuk pemakaian secara acak
+my @user_agents = (
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
+    'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0',
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko',
+    'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
+);
 
 # Daftar domain Google yang paling banyak digunakan
 my @google_domains = (
@@ -30,7 +41,7 @@ sub banner() {
     print color('reset');
     print colored ("################################################################",'white'),"\n";
     print colored ("##               Google Dorking Tool by Kliverz               ##",'white'),"\n";
-    print colored ("##             Contact : kliverz1337(at)gmail.com             ##",'white'),"\n";	
+    print colored ("##             Contact : kliverz1337(at)gmail.com             ##",'white'),"\n";    
     print colored ("##  THANKS TO : JATIMCOM, BLACKUNIX CREW, KILL -9 CREW, BKHT  ##",'white'),"\n";
     print colored ("################################################################",'white'),"\n\n";
     print color('reset');
@@ -52,6 +63,10 @@ sub check_ip_block {
     $ua->timeout(10);
     $ua->env_proxy;
 
+    # Random User-Agent
+    my $random_user_agent = $user_agents[rand @user_agents];
+    $ua->agent($random_user_agent);
+
     my $url = "https://www.google.com";
     my $response = $ua->get($url);
 
@@ -66,7 +81,7 @@ sub check_ip_block {
         } else {
             print item();
             print color('bold green');
-            print "IP Anda tidak diblokir oleh Google.\n\n";
+            print "IP Anda tidak diblokir oleh Google.\n";
             print color('reset');
         }
     } else {
@@ -75,6 +90,12 @@ sub check_ip_block {
         print "Tidak dapat menghubungi Google untuk memeriksa status IP.\n";
         print color('reset');
     }
+
+    # Tampilkan User-Agent yang digunakan
+    print item();
+    print color('bold green');
+    print "User-Agent : $random_user_agent\n\n";
+    print color('reset');
 }
 
 # Tampilkan banner dan cek IP
@@ -82,8 +103,8 @@ banner();
 check_ip_block();
 
 # Fungsi untuk mendapatkan input query secara interaktif
-print color('bold green');
-print "Masukkan Google Dork: ";
+print color('bold white');
+print "Masukkan Google Dork --> : ";
 print color('reset');
 my $query = <STDIN>;
 chomp($query);  # Menghapus newline di akhir input
@@ -157,6 +178,10 @@ foreach my $google_domain (@google_domains) {
     for (my $start = 0; $start < 100; $start += 10) {
         # URL Google Search dengan parameter pagination dan domain
         my $url = "https://www.$domain/search?q=$query&start=$start";
+
+        # Random User-Agent
+        my $random_user_agent = $user_agents[rand @user_agents];
+        $ua->agent($random_user_agent);
 
         # Membuat request
         my $response = $ua->get($url);
