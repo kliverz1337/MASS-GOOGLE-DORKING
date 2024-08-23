@@ -6,6 +6,7 @@ Ini adalah alat sederhana yang ditulis dalam Perl untuk melakukan Google Dorking
 ## Fitur
 
 - **Pengecekan Blokir IP**: Memeriksa apakah IP Anda diblokir oleh Google dengan melakukan request sederhana.
+- **Random User Agent** : Setiap request bakal pakai User-Agent yang beda-beda buat mengurangi kemungkinan diblokir..
 - **Pencarian Google**: Melakukan pencarian berdasarkan query yang diberikan dan domain Google yang dipilih.
 - **Pemilihan Domain**: Memungkinkan pencarian di satu domain Google spesifik atau di semua domain Google yang umum digunakan.
 - **Output**: Menyimpan hasil pencarian ke dalam file `google_result.txt` dan menampilkan jumlah domain unik yang ditemukan.
