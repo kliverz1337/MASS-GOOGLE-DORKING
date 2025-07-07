@@ -1,15 +1,14 @@
-```markdown
 # Google Dorking Tool
 
 Ini adalah alat sederhana yang ditulis dalam Perl untuk melakukan Google Dorking, yaitu teknik pencarian canggih di Google untuk menemukan informasi spesifik di web dengan menggunakan query pencarian yang terperinci.
 
 ## Screenshot
 
-![Screenshot 1](Screenshot_1.png)
+![Screenshot 1](./Screenshot_1.png)
 
-![Screenshot 2](Screenshot_2.png)
+![Screenshot 2](./Screenshot_2.png)
 
-![Screenshot 3](Screenshot_3.png)
+![Screenshot 3](./Screenshot_3.png)
 
 ## Fitur
 
