@@ -1,6 +1,12 @@
 ```markdown
 # Google Dorking Tool
 
+## Screenshot
+
+![Screenshot 1](./Screenshot_1.png)
+![Screenshot 2](./Screenshot_2.png)
+![Screenshot 3](./Screenshot_3.png)
+
 Ini adalah alat sederhana yang ditulis dalam Perl untuk melakukan Google Dorking, yaitu teknik pencarian canggih di Google untuk menemukan informasi spesifik di web dengan menggunakan query pencarian yang terperinci.
 
 ## Fitur
@@ -8,7 +14,7 @@ Ini adalah alat sederhana yang ditulis dalam Perl untuk melakukan Google Dorking
 - **Pengecekan Blokir IP**: Memeriksa apakah IP Anda diblokir oleh Google dengan melakukan request sederhana.
 - **Random User Agent** : Setiap request bakal pakai User-Agent yang beda-beda buat mengurangi kemungkinan diblokir..
 - **Pencarian Google**: Melakukan pencarian berdasarkan query yang diberikan dan domain Google yang dipilih.
-- **Pemilihan Domain**: Memungkinkan pencarian di satu domain Google spesifik atau di semua domain Google yang umum digunakan.
+- **Pemilihan Domain**: Memungkinkan pencarian di satu domain Google spesifik atau di semua domain Google yang umum digunakan. Daftar domain dapat dikustomisasi melalui file `google_domains.txt`.
 - **Output**: Menyimpan hasil pencarian ke dalam file `google_result.txt` dan menampilkan jumlah domain unik yang ditemukan.
 - **Debug Mode**: Terdapat mode debug yang dapat diaktifkan untuk menampilkan informasi tambahan selama proses.
 

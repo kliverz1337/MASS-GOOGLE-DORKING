@@ -1,0 +1,7 @@
+google.com,Global
+google.co.id,Indonesia
+google.co.uk,United Kingdom
+google.ca,Canada
+google.de,Germany
+google.co.jp,Japan
+google.com.au,Australia

@@ -22,16 +22,25 @@ my @user_agents = (
     'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0'
 );
 
-# Daftar domain Google yang paling banyak digunakan
-my @google_domains = (
-    { domain => 'google.com',     description => 'Global' },
-    { domain => 'google.co.id',   description => 'Indonesia' },
-    { domain => 'google.co.uk',   description => 'United Kingdom' },
-    { domain => 'google.ca',      description => 'Canada' },
-    { domain => 'google.de',      description => 'Germany' },
-    { domain => 'google.co.jp',   description => 'Japan' },
-    { domain => 'google.com.au',  description => 'Australia' },
-);
+# Fungsi untuk memuat domain Google dari file eksternal
+sub load_google_domains {
+    my $filename = 'google_domains.txt';
+    my @domains;
+
+    open(my $fh, '<', $filename) or die "Tidak bisa membuka file $filename: $!";
+
+    while (my $line = <$fh>) {
+        chomp $line;
+        my ($domain, $description) = split /,/, $line, 2;
+        push @domains, { domain => $domain, description => $description };
+    }
+
+    close $fh;
+    return @domains;
+}
+
+# Muat domain Google dari file
+my @google_domains = load_google_domains();
 
 # Fungsi untuk menampilkan banner
 sub banner() {
