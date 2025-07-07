@@ -5,9 +5,9 @@ Ini adalah alat sederhana yang ditulis dalam Perl untuk melakukan Google Dorking
 
 ## Screenshot
 
-![Screenshot 1](./Screenshot_1.png)
-![Screenshot 2](./Screenshot_2.png)
-![Screenshot 3](./Screenshot_3.png)
+![Application Screenshot](Screenshot_1.png)
+![Application Screenshot](Screenshot_2.png)
+![Application Screenshot](Screenshot_3.png)
 
 ## Fitur
 
